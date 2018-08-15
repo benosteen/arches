@@ -32,7 +32,8 @@ RUN apt-get update -y &&\
 		zlib1g-dev \
         clang \
         make \
-        pkg-config &&\
+        pkg-config \
+        graphviz &&\
 	curl -sL https://deb.nodesource.com/setup_6.x | bash - &&\
 	apt-get install nodejs &&\
 	npm install -g yarn &&\
@@ -47,7 +48,8 @@ RUN pip install virtualenv==15.1.0 &&\
 	. ENV/bin/activate &&\
 	pip install -U pip \
 	setuptools &&\
-	pip install requests
+	pip install requests &&\
+	pip install pycallgraph
 
 
 ## Install Postgresql client

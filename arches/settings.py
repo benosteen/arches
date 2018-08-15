@@ -281,6 +281,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'arches.app.utils.middleware.SetAnonymousUser',
+    'arches.app.utils.middleware.PyCallGraphMiddleware',
 ]
 
 ROOT_URLCONF = 'arches.urls'

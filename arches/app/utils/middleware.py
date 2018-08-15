@@ -13,10 +13,36 @@ from jose import jwt, jws, JWSError
 
 HTTP_HEADER_ENCODING = 'iso-8859-1'
 
+## PYCALLGRAPH ---------------------------------------------------------- ##
+from pycallgraph import Config
+from pycallgraph import PyCallGraph
+from pycallgraph.globbing_filter import GlobbingFilter
+from pycallgraph.output import GraphvizOutput
+import time
+
+class PyCallGraphMiddleware(MiddlewareMixin):
+
+    def process_view(self, request, callback, callback_args, callback_kwargs):
+        if 'graph' in request.GET:
+            config = Config()
+            config.trace_filter = GlobbingFilter(exclude=['django.*', 'pycallgraph.*'])
+            graphviz = GraphvizOutput(output_file='/web_root/dev/callgraphs/pycallgraph-{}.png'.format(time.time()))
+            pycallgraph = PyCallGraph(output=graphviz, config=config)
+            pycallgraph.start()
+
+            self.pycallgraph = pycallgraph
+
+    def process_response(self, request, response):
+        if 'graph' in request.GET:
+            self.pycallgraph.done()
+
+        return response
+## PYCALLGRAPH END------------------------------------------------------- ##
+
 class SetAnonymousUser(MiddlewareMixin):
     def process_request(self, request):
-        # for OAuth authentication to work, we can't automatically assign 
-        # the anonymous user to the request, otherwise the anonymous user is 
+        # for OAuth authentication to work, we can't automatically assign
+        # the anonymous user to the request, otherwise the anonymous user is
         # used for all OAuth resourse requests
         if request.path != reverse('oauth2:authorize') and request.user.is_anonymous():
             try:
@@ -76,7 +102,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
 class TokenMiddleware(MiddlewareMixin):
     """
     puts the Bearer token found in the request header onto the request object
-    
+
     pulled from http://www.django-rest-framework.org
 
     """
