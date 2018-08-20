@@ -60,6 +60,7 @@ class SetAnonymousUser(MiddlewareMixin):
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     """
     tries to setup the user on the request object based on the JSON web token passed in with the request
+
     """
 
     def get_user_from_token(self, token):
