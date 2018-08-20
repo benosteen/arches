@@ -47,8 +47,8 @@ class PyCallGraphMiddleware(MiddlewareMixin):
 
 class SetAnonymousUser(MiddlewareMixin):
     def process_request(self, request):
-        # for OAuth authentication to work, we can't automatically assign
-        # the anonymous user to the request, otherwise the anonymous user is
+        # for OAuth authentication to work, we can't automatically assign 
+        # the anonymous user to the request, otherwise the anonymous user is 
         # used for all OAuth resourse requests
         if request.path != reverse('oauth2:authorize') and request.user.is_anonymous():
             try:
@@ -60,7 +60,6 @@ class SetAnonymousUser(MiddlewareMixin):
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     """
     tries to setup the user on the request object based on the JSON web token passed in with the request
-
     """
 
     def get_user_from_token(self, token):
@@ -108,7 +107,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
 class TokenMiddleware(MiddlewareMixin):
     """
     puts the Bearer token found in the request header onto the request object
-
+    
     pulled from http://www.django-rest-framework.org
 
     """
