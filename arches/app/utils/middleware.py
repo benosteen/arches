@@ -29,7 +29,7 @@ class PyCallGraphMiddleware(MiddlewareMixin):
             # you might want to remove the django exclusion from here to probe further
             # Note that there is a lot of abstraction and the callgraph for it is huge
             config.trace_filter = GlobbingFilter(exclude=['django.*', 'pycallgraph.*', 'PyCallGraph.*'])
-            path_called = request.get_full_path().replace("/?", "_withparams_").replace("/", "_")
+            path_called = request.get_full_path().replace("/?", "_withparams_").replace("&","+").replace("/", "_")
             if not os.path.isdir(CALLGRAPH_DIR):
                 os.mkdir(CALLGRAPH_DIR)
             graphviz = GraphvizOutput(output_file=os.path.join(CALLGRAPH_DIR, "{0}-{1}.png".format(path_called, time.time())))
