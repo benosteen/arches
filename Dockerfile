@@ -6,6 +6,8 @@ ENV WEB_ROOT=/web_root
 ENV DOCKER_DIR=/docker
 # Root project folder
 ENV ARCHES_ROOT=${WEB_ROOT}/arches
+ENV DJANGO_CACHE=django.core.cache.backends.memcached.MemcachedCache
+ENV DJANGO_CACHE_LOCATION=memcache:11211
 
 
 ## Install dependencies
@@ -32,6 +34,7 @@ RUN apt-get update -y &&\
 		zlib1g-dev \
         clang \
         make \
+        python-memcache \
         pkg-config &&\
 	curl -sL https://deb.nodesource.com/setup_6.x | bash - &&\
 	apt-get install nodejs &&\

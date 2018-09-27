@@ -365,8 +365,8 @@ USER_SIGNUP_GROUP = 'Crowdsource Editor'
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'BACKEND': os.getenv('DJANGO_CACHE') or "django.core.cache.backends.memcached.MemcachedCache",
+        'LOCATION': os.getenv('DJANGO_CACHE_LOCATION') or "localhost:11211",
     }
 }
 
