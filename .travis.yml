@@ -54,8 +54,8 @@ matrix:
       node_js: 10.8
       install:
         - python setup.py install --user --prefix=
-        - pip install --user -r arches/install/requirements_dev.txt
-        - pip install --user coveralls
+        - pip install -r arches/install/requirements_dev.txt
+        - pip install coveralls
         - npm ci
       cache:
         directories:
