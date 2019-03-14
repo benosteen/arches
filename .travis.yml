@@ -26,7 +26,9 @@ before_install:
   - psql -d postgres -c "CREATE EXTENSION postgis;"
   - wget ${ES_DOWNLOAD_URL}
   - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
-  - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
+  - adduser -q es --disabled-password --gecos "" --no-create-home
+  - chown -R es:es elasticsearch-${ES_VERSION}/
+  - su - es -c "./elasticsearch-${ES_VERSION}/bin/elasticsearch &"
 
 cache:
   - apt
@@ -48,7 +50,7 @@ matrix:
   include:
     - name: "Python tests"
       script:
-        - curl -v http://localhost:9200/
+        - wait-on http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
         - "pip install -e . --no-binary :all:"
@@ -68,7 +70,7 @@ matrix:
         directories:
           - ~/.cache
       script:
-        - curl -v http://localhost:9200/
+        - wait-on http://localhost:9200/
         - python manage.py runserver 0.0.0.0:8080 &
         - npm start & wait-on http://localhost:8080
         - npm run cy:run -- --record --parallel
