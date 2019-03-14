@@ -29,11 +29,9 @@ before_install:
   - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
 
 install:
-  - npm ci
   - python setup.py install
   - pip install -r arches/install/requirements_dev.txt
   - pip install coveralls
-  - npm start -- --silent &
 
 cache:
   - apt
