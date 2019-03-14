@@ -52,6 +52,7 @@ matrix:
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
         - python setup.py install
+        - pip install -r arches/install/requirements.txt
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
     - name: "Cypress.io tests"
@@ -59,13 +60,16 @@ matrix:
         - python setup.py install --user --prefix=
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
+        - python manage.py packages -o setup_db
+        - yarn install
+        - npm install -g cypress --save-dev
       cache:
         npm: true
         directories:
           - ~/.cache
       script:
-        - $(npm bin)/print-env TRAVIS
-        - npm start -- --silent &
+        - python manage.py runserver 0.0.0.0:8080
+        - npm start & wait-on http://localhost:8080
         - npm run cy:run -- --record --parallel
         # after all tests finish running we need
         # to kill all background jobs (like "npm start &")
