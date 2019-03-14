@@ -8,10 +8,7 @@ env:
 addons:
   postgresql: 9.6
   apt:
-    # sources:
-    #   - elasticsearch-6.x
     packages:
-      #- elasticsearch
       - libxml2-dev
       - libpq-dev
       - openjdk-7-jdk
@@ -21,31 +18,6 @@ addons:
 services:
   - postgresql
   - couchdb
-
-matrix:
-  include:
-    - language: python
-      python: 2.7
-      cache:
-        - apt
-        - pip
-      before_script:
-        - ./arches/install/ci_install/setup_couch.sh
-      script:
-        - curl -v http://localhost:9200/
-        #- wget -q --waitretry=1 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
-        - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
-    - language: node_js
-      node_js: 10.8
-      cache:
-        - npm
-        directories:
-          - ~/.cache
-        override:
-          - npm ci
-          - npm run cy:verify
-      script:
-        - ${npm bin}/cypress run --record
 
 before_install:
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
@@ -66,3 +38,27 @@ install:
 
 after_success:
   - coveralls
+
+matrix:
+  include:
+    - language: python
+      python: 2.7
+      cache:
+        - apt
+        - pip
+      before_script:
+        - ./arches/install/ci_install/setup_couch.sh
+      script:
+        - curl -v http://localhost:9200/
+        - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+    - language: node_js
+      node_js: 10.8
+      cache:
+        directories:
+          - ~/.cache
+          - ~/.npm
+        override:
+          - npm ci
+          - npm run cy:verify
+      script:
+        - ${npm bin}/cypress run --record
