@@ -51,13 +51,12 @@ matrix:
         - curl -v http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
-        - python setup.py install
-        - pip install -r arches/install/requirements.txt
+        - pip install -e . --no-binary :all:
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
     - name: "Cypress.io tests"
       install:
-        - python setup.py install --user --prefix=
+        - pip install -e . --no-binary :all:
         - pip install -r arches/install/requirements.txt
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
@@ -69,6 +68,7 @@ matrix:
         directories:
           - ~/.cache
       script:
+        - curl -v http://localhost:9200/
         - python manage.py runserver 0.0.0.0:8080
         - npm start & wait-on http://localhost:8080
         - npm run cy:run -- --record --parallel
