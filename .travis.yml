@@ -27,6 +27,7 @@ before_install:
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
   - psql -d postgres -c "SET standard_conforming_strings = off;"
   - psql -d postgres -c "CREATE EXTENSION postgis;"
+  - "elasticsearch -v"
   - "pip install -e . --no-binary :all:"
   - pip install -r arches/install/requirements.txt
   - pip install -r arches/install/requirements_dev.txt
