@@ -61,7 +61,8 @@ matrix:
         - pip install -r arches/install/requirements.txt
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
-        - cd arches && python manage.py packages -o setup_db && yarn install
+        - python manage.py packages -o setup_db
+        - yarn install
         - npm install -g cypress --save-dev
       cache:
         npm: true
