@@ -51,25 +51,25 @@ matrix:
         - curl -v http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
-        - pip install -e . --no-binary :all:
+        - "pip install -e . --no-binary :all:"
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
     - name: "Cypress.io tests"
       install:
-        - pip install -e . --no-binary :all:
+        - "pip install -e . --no-binary :all:"
         - pip install -r arches/install/requirements.txt
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
+        - npm install -g cypress --save-dev
         - python manage.py packages -o setup_db
         - yarn install
-        - npm install -g cypress --save-dev
       cache:
         npm: true
         directories:
           - ~/.cache
       script:
         - curl -v http://localhost:9200/
-        - python manage.py runserver 0.0.0.0:8080
+        - python manage.py runserver 0.0.0.0:8080 &
         - npm start & wait-on http://localhost:8080
         - npm run cy:run -- --record --parallel
         # after all tests finish running we need
