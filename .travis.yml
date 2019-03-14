@@ -46,24 +46,27 @@ node_js: 10.8
 
 matrix:
   include:
-    - script:
+    - name: "Python tests"
+      script:
         - curl -v http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
         - python setup.py install
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
-    - install:
+    - name: "Cypress.io tests"
+      install:
         - python setup.py install --user --prefix=
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
-        - npm ci
       cache:
+        npm: true
         directories:
           - ~/.cache
-          - ~/.npm
-        override:
-          - npm ci
-          - npm run cy:verify
       script:
-        - ${npm bin}/cypress run --record
+        - $(npm bin)/print-env TRAVIS
+        - npm start -- --silent &
+        - npm run cy:run -- --record --parallel
+        # after all tests finish running we need
+        # to kill all background jobs (like "npm start &")
+        - kill $(jobs -p) || true
