@@ -38,8 +38,11 @@ after_success:
 before_script:
   - ./arches/install/ci_install/setup_couch.sh
 
-language: python
+language: 
+  - python
+  - node_js
 python: 2.7.9
+node_js: 10.8
 
 matrix:
   include:
@@ -50,9 +53,7 @@ matrix:
         - python setup.py install
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
-    - language: node_js
-      node_js: 10.8
-      install:
+    - install:
         - python setup.py install --user --prefix=
         - pip install -r arches/install/requirements_dev.txt
         - pip install coveralls
