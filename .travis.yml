@@ -1,15 +1,6 @@
 dist: trusty
-language: python
 filter_secrets: false
-
-python:
-  - 2.7
-
 sudo: false
-
-cache:
-  - apt
-  - pip
 
 env:
   - ES_VERSION=6.6.2 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
@@ -31,6 +22,31 @@ services:
   - postgresql
   - couchdb
 
+matrix:
+  include:
+    - language: python
+      python: 2.7
+      cache:
+        - apt
+        - pip
+      before_script:
+        - ./arches/install/ci_install/setup_couch.sh
+      script:
+        - curl -v http://localhost:9200/
+        #- wget -q --waitretry=1 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
+        - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+    - language: node_js
+      node_js: 10.8
+      cache:
+        - npm
+        directories:
+          - ~/.cache
+        override:
+          - npm ci
+          - npm run cy:verify
+      script:
+        - ${npm bin}/cypress run --record
+
 before_install:
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
@@ -40,19 +56,13 @@ before_install:
   - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
   - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
 
-before_script: ./arches/install/ci_install/setup_couch.sh
-
 install:
   - python setup.py install
   - pip install -r arches/install/requirements_dev.txt
   - pip install coveralls
   # - npm install -g yarn
   # - yarn install
-
-script:
-  - curl -v http://localhost:9200/
-  #- wget -q --waitretry=1 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
-  - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
+  - npm start -- --silent &
 
 after_success:
   - coveralls
