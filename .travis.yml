@@ -45,10 +45,11 @@ after_success:
 before_script:
   - ./arches/install/ci_install/setup_couch.sh
 
+language: python
+python: 2.7
+
 matrix:
   include:
-    - language: python
-      python: 2.7
       script:
         - curl -v http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
