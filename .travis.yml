@@ -27,6 +27,7 @@ before_install:
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
   - psql -d postgres -c "SET standard_conforming_strings = off;"
   - psql -d postgres -c "CREATE EXTENSION postgis;"
+  - npm install wait-on
   #- wget ${ES_DOWNLOAD_URL}
   #- tar -xzf elasticsearch-${ES_VERSION}.tar.gz
   #- su - es -c "./elasticsearch-${ES_VERSION}/bin/elasticsearch &"
