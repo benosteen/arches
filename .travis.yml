@@ -18,9 +18,6 @@ addons:
 services:
   - postgresql
   - couchdb
-  - elasticsearch
-
-elasticsearch: 6.6.2
 
 before_install:
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
@@ -33,9 +30,9 @@ before_install:
   - pip install -r arches/install/requirements_dev.txt
   - npm install -g wait-on
   - pip install coveralls
-  #- wget ${ES_DOWNLOAD_URL}
-  #- tar -xzf elasticsearch-${ES_VERSION}.tar.gz
-  #- su - es -c "./elasticsearch-${ES_VERSION}/bin/elasticsearch &"
+  - wget ${ES_DOWNLOAD_URL}
+  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
+  - "./elasticsearch-${ES_VERSION}/bin/elasticsearch -v &"
 
 cache:
   - apt
