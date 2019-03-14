@@ -29,9 +29,9 @@ before_install:
   - ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
 
 install:
-  - python setup.py install
-  - pip install -r arches/install/requirements_dev.txt
-  - pip install coveralls
+  - python setup.py install --user --prefix=
+  - pip install --user -r arches/install/requirements_dev.txt
+  - pip install --user coveralls
 
 cache:
   - apt
