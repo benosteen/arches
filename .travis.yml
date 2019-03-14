@@ -18,17 +18,18 @@ addons:
 services:
   - postgresql
   - couchdb
+  - elasticsearch
+
+elasticsearch: 6.6.2
 
 before_install:
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
   - psql -d postgres -c "SET standard_conforming_strings = off;"
   - psql -d postgres -c "CREATE EXTENSION postgis;"
-  - wget ${ES_DOWNLOAD_URL}
-  - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
-  - adduser -q es --disabled-password --gecos "" --no-create-home
-  - chown -R es:es elasticsearch-${ES_VERSION}/
-  - su - es -c "./elasticsearch-${ES_VERSION}/bin/elasticsearch &"
+  #- wget ${ES_DOWNLOAD_URL}
+  #- tar -xzf elasticsearch-${ES_VERSION}.tar.gz
+  #- su - es -c "./elasticsearch-${ES_VERSION}/bin/elasticsearch &"
 
 cache:
   - apt
