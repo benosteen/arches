@@ -3,7 +3,7 @@ filter_secrets: false
 sudo: false
 
 env:
-  - ES_VERSION=6.6.2 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz ELASTICSEARCH_PREFIX="test"
+  - ES_VERSION=6.6.2 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 addons:
   postgresql: 9.6
@@ -20,7 +20,10 @@ services:
   - couchdb
 
 before_install:
-  - "cp docker/settings_local.py arches/settings_local.py"
+  - |
+    cat <<EOF  > arches/settings_local.py
+    ELASTICSEARCH_PREFIX="test"
+    EOF
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
   - psql -d postgres -c "SET standard_conforming_strings = off;"
