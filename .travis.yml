@@ -59,8 +59,9 @@ matrix:
       install:
     - name: "Cypress.io tests"
       install:
-        - npm install cypress --save-dev
-        - npm link minimist
+        #- npm install cypress --save-dev
+        #- npm link minimist
+        - yarn add minimist 
         - yarn add cypress --dev
         - python manage.py packages -o setup_db
         - yarn install
