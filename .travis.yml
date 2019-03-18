@@ -20,10 +20,7 @@ services:
   - couchdb
 
 before_install:
-  - |
-    cat <<EOF  > arches/settings_local.py
-    ELASTICSEARCH_PREFIX="test"
-    EOF
+  - echo 'ELASTICSEARCH_PREFIX="arches"' > arches/settings_local.py
   - psql -d postgres -c "ALTER USER postgres with encrypted password 'postgis';"
   - echo "*:*:*:postgres:postgis" >> ~/.pgpass
   - psql -d postgres -c "SET standard_conforming_strings = off;"
