@@ -3,7 +3,7 @@ filter_secrets: false
 sudo: false
 
 env:
-  - ES_VERSION=6.6.2 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
+  - ES_VERSION=6.6.2 CYPRESS_RECORD_KEY="some" ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 addons:
   postgresql: 9.6
@@ -69,7 +69,7 @@ matrix:
           - ~/.cache
       script:
         - python manage.py runserver 0.0.0.0:8080 &
-        - $(npm bin)/cypress run --record
+        - $(npm bin)/cypress run
         # after all tests finish running we need
         # to kill all background jobs (like "npm start &")
         - kill $(jobs -p) || true
