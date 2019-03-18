@@ -69,7 +69,7 @@ matrix:
       script:
         - wait-on http://localhost:9200/
         - python manage.py runserver 0.0.0.0:8080 &
-        - npm run cy:run -- --record --parallel
+        - $(npm bin)/cypress run --record
         # after all tests finish running we need
         # to kill all background jobs (like "npm start &")
         - kill $(jobs -p) || true
