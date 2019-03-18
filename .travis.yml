@@ -33,7 +33,6 @@ before_install:
   - wget ${ES_DOWNLOAD_URL}
   - tar -xzf elasticsearch-${ES_VERSION}.tar.gz
   - "./elasticsearch-${ES_VERSION}/bin/elasticsearch -v &"
-  - python manage.py packages -o setup_db
 
 cache:
   - apt
@@ -60,14 +59,15 @@ matrix:
       install:
     - name: "Cypress.io tests"
       install:
-        - yarn install
         - npm install cypress --save-dev
+        - wait-on http://localhost:9200/
+        - python manage.py packages -o setup_db
+        - yarn install
       cache:
         npm: true
         directories:
           - ~/.cache
       script:
-        - wait-on http://localhost:9200/
         - python manage.py runserver 0.0.0.0:8080 &
         - $(npm bin)/cypress run --record
         # after all tests finish running we need
