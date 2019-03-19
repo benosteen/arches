@@ -3,7 +3,7 @@ filter_secrets: false
 sudo: false
 
 env:
-  - ES_VERSION=6.6.2 CYPRESS_RECORD_KEY="some" ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
+  - ES_VERSION=6.6.2 ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
 
 addons:
   postgresql: 9.6
@@ -52,12 +52,12 @@ node_js: 10.8
 
 matrix:
   include:
-    - name: "Python tests"
+    - name: "Python - Nose/unittests"
       script:
         - wait-on http://localhost:9200/
         - python manage.py test tests --pattern="*.py" --settings="tests.test_settings"
       install:
-    - name: "Cypress.io tests"
+    - name: "Javascript - Cypress.io tests"
       install:
         - yarn install
         - npm install cypress --save-dev
@@ -68,7 +68,7 @@ matrix:
         directories:
           - ~/.cache
       script:
-        - python manage.py runserver 0.0.0.0:8080 &
+        - python manage.py runserver 0.0.0.0:8000 &
         - $(npm bin)/cypress run
         # after all tests finish running we need
         # to kill all background jobs (like "npm start &")
