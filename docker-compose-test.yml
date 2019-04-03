@@ -2,8 +2,7 @@ version: '2'
 services:
 
     sut:
-      container_name: arches
-      image: archesproject/arches:master
+      container_name: sut
       build:
         context: .
         dockerfile: ./Dockerfile
