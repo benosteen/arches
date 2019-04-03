@@ -1,27 +1,40 @@
 version: '2'
 services:
 
-    sut:
+    arches:
+      container_name: arches
+      image: archesproject/arches:master
       build:
         context: .
         dockerfile: ./Dockerfile
       command: run_tests
+      volumes:
+        - arches-log:/arches/arches/logs
+        - arches-static:/static_root
       environment:
+        - ARCHES_PROJECT=dev
+        - ARCHES_VERSION=master
+        - INSTALL_DEFAULT_GRAPHS=False
+        - INSTALL_DEFAULT_CONCEPTS=False
         - PGUSERNAME=postgres
         - PGPASSWORD=postgres
-        - PGDBNAME=arches
+        - PGDBNAME=dev
         - PGHOST=db
         - PGPORT=5432
-        - ESHOST=elasticsearch
-        - ESPORT=9200
         - COUCHDB_HOST=couchdb
         - COUCHDB_PORT=5984
         - COUCHDB_USER=admin
         - COUCHDB_PASS=password
-        - DJANGO_MODE=PROD
-        - DJANGO_DEBUG=False
+        - ESHOST=elasticsearch
+        - ESPORT=9200
+        - ELASTICSEARCH_PREFIX=dev
+        - DJANGO_MODE=DEV
+        - DJANGO_DEBUG=True
+        - DJANGO_REMOTE_DEBUG=False
         - DOMAIN_NAMES=localhost
         - TZ=PST
+      ports:
+        - '8000:8000'
       depends_on:
         - db
         - elasticsearch
@@ -30,6 +43,9 @@ services:
     db:
       container_name: db
       image: mdillon/postgis:9.6-alpine
+      volumes:
+          - postgres-data:/var/lib/postgresql/data
+          - postgres-log:/var/log/postgresql
       ports:
         - '5432:5432'
       environment:
@@ -38,7 +54,17 @@ services:
 
     elasticsearch:
       container_name: elasticsearch
-      image: elasticsearch:6.6.2
+      image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+      volumes:
+        - elasticsearch-data:/usr/share/elasticsearch/data
+      entrypoint:
+        - elasticsearch
+        - -Ehttp.port=9200
+        - -Ehttp.cors.enabled=true
+        - -Ehttp.cors.allow-origin=http://localhost:1358,http://127.0.0.1:1358
+        - -Ehttp.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+        - -Ehttp.cors.allow-credentials=true
+      user: elasticsearch
       ports:
         - "9200:9200"
         - "9300:9300"
@@ -53,3 +79,15 @@ services:
       environment:
         COUCHDB_USER: admin
         COUCHDB_PASSWORD: password
+      volumes:
+        - couchdb-data:/usr/local/var/lib/couchdb
+        - couchdb-log:/usr/local/var/log/couchdb
+
+volumes:
+    arches-log:
+    arches-static:
+    couchdb-data:
+    couchdb-log:
+    postgres-data:
+    postgres-log:
+    elasticsearch-data:
