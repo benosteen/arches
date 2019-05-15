@@ -280,9 +280,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django.contrib.gis',
     'arches',
     'arches.app.models',
+    'arches.activitystream',
     'arches.management',
     'guardian',
     'captcha',
@@ -290,7 +292,10 @@ INSTALLED_APPS = (
     'corsheaders',
     'oauth2_provider',
     #'debug_toolbar'
-)
+    'actstream',   # django-activity-stream
+) 
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
