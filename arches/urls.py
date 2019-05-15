@@ -161,6 +161,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2')),
+    url(r'^activity/', include('actstream.urls')), 
 ]
 
 
