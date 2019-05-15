@@ -22,7 +22,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
 from django.db.models import Q, Max
-from django.db.models.signals import post_delete, pre_save
+from django.db.models.signals import post_delete, pre_save, post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
@@ -1052,3 +1052,52 @@ class Plugin(models.Model):
         permissions = (
             ('view_plugin', 'View plugin'),
         )
+
+
+from actstream import action
+
+def AS_cu_handler(sender, instance, created, **kwargs):
+    request = kwargs.pop('request', None)
+    user = kwargs.pop('user', None)
+    if request is None:
+        if user is None:
+            user = User.objects.first()
+    else:
+        user = request.user
+
+    target = None
+    if hasattr(instance, "resourceinstance"):         # Tile
+        target = instance.resourceinstance
+    elif hasattr(instance, "resourceinstanceid"):  # ResourceModel
+        target = instance
+
+    if created:
+        action.send(user, verb='create', action_object=instance, 
+                    description=instance._meta.object_name, target = target)
+    else:
+        action.send(user, verb='update', action_object=instance, 
+                    description=instance._meta.object_name, target = target)
+
+
+def AS_delete_handler(sender, instance, **kwargs):
+    request = kwargs.pop('request', None)
+    user = kwargs.pop('user', None)
+    if request is None:
+        if user is None:
+            user = User.objects.first()
+    else:
+        user = request.user
+
+    target = None
+    if hasattr(instance, "resourceinstance"):         # Tile
+        target = instance.resourceinstance
+    elif hasattr(instance, "resourceinstanceid"):  # ResourceModel
+        target = instance
+
+    action.send(user, verb='delete', action_object=instance, 
+                description=instance._meta.object_name, target = target)
+
+
+for modelClass in [GraphModel, ResourceInstance, Concept, File, Node, TileModel, Value]:
+    post_save.connect(AS_cu_handler, sender=modelClass)
+    post_delete.connect(AS_delete_handler, sender=modelClass)

@@ -518,3 +518,12 @@ class TileValidationError(Exception):
 
     def __str__(self):
         return repr(self.message)
+
+
+from actstream import action, registry
+from arches.app.models.models import AS_cu_handler, AS_delete_handler
+from django.db.models.signals import post_delete, post_save
+
+registry.register(Tile)
+post_save.connect(AS_cu_handler, sender=Tile)
+post_delete.connect(AS_delete_handler, sender=Tile)
