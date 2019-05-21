@@ -456,3 +456,12 @@ def is_uuid(value_to_test):
         return True
     except:
         return False
+
+
+from actstream import action, registry
+from arches.app.models.models import AS_cu_handler, AS_delete_handler
+from django.db.models.signals import post_delete, post_save
+
+registry.register(Resource)
+post_save.connect(AS_cu_handler, sender=Resource)
+post_delete.connect(AS_delete_handler, sender=Resource)
