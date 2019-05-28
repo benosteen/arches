@@ -523,9 +523,9 @@ class TileValidationError(Exception):
 
 
 try:
-    if settings.USE_ACTIVITY_STREAM == True:
-        from arches.activitystream.signal_handlers import AS_hook_model
-        AS_hook_model(Tile)
-        logger.info("Activity Stream: watching Tile model activity")
-except AttributeError as e:
-    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating Tile model hooks")
+    from arches.activitystream.signal_handlers import AS_hook_model
+    for model_object in [Tile]:
+        AS_hook_model(model_object)
+        logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
+except ImportError as e:
+    logger.info("Cannot import Activity Stream classes - not activating model hooks")

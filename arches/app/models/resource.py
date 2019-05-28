@@ -462,10 +462,9 @@ def is_uuid(value_to_test):
 
 
 try:
-    if settings.USE_ACTIVITY_STREAM == True:
-        from arches.activitystream.signal_handlers import AS_hook_model
-        for model_object in [Resource]:
-            AS_hook_model(model_object)
-            logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
-except AttributeError as e:
-    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating model hooks")
+    from arches.activitystream.signal_handlers import AS_hook_model
+    for model_object in [Resource]:
+        AS_hook_model(model_object)
+        logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
+except ImportError as e:
+    logger.info("Cannot import Activity Stream classes - not activating model hooks")
