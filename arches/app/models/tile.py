@@ -34,7 +34,9 @@ from arches.app.utils.betterJSONSerializer import JSONSerializer, JSONDeserializ
 from arches.app.search.search_engine_factory import SearchEngineFactory
 from arches.app.search.elasticsearch_dsl_builder import Query, Bool, Terms
 from arches.app.datatypes.datatypes import DataTypeFactory
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Tile(models.TileModel):
     """
@@ -520,10 +522,10 @@ class TileValidationError(Exception):
         return repr(self.message)
 
 
-from actstream import action, registry
-from arches.app.models.models import AS_cu_handler, AS_delete_handler
-from django.db.models.signals import post_delete, post_save
-
-registry.register(Tile)
-post_save.connect(AS_cu_handler, sender=Tile)
-post_delete.connect(AS_delete_handler, sender=Tile)
+try:
+    if settings.USE_ACTIVITY_STREAM == True:
+        from arches.activitystream.signal_handlers import AS_hook_model
+        AS_hook_model(Tile)
+        logger.info("Activity Stream: watching Tile model activity")
+except AttributeError as e:
+    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating Tile model hooks")

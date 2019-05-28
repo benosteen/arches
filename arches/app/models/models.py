@@ -1054,50 +1054,11 @@ class Plugin(models.Model):
         )
 
 
-from actstream import action
-
-def AS_cu_handler(sender, instance, created, **kwargs):
-    request = kwargs.pop('request', None)
-    user = kwargs.pop('user', None)
-    if request is None:
-        if user is None:
-            user = User.objects.first()
-    else:
-        user = request.user
-
-    target = None
-    if hasattr(instance, "resourceinstance"):         # Tile
-        target = instance.resourceinstance
-    elif hasattr(instance, "resourceinstanceid"):  # ResourceModel
-        target = instance
-
-    if created:
-        action.send(user, verb='create', action_object=instance, 
-                    description=instance._meta.object_name, target = target)
-    else:
-        action.send(user, verb='update', action_object=instance, 
-                    description=instance._meta.object_name, target = target)
-
-
-def AS_delete_handler(sender, instance, **kwargs):
-    request = kwargs.pop('request', None)
-    user = kwargs.pop('user', None)
-    if request is None:
-        if user is None:
-            user = User.objects.first()
-    else:
-        user = request.user
-
-    target = None
-    if hasattr(instance, "resourceinstance"):         # Tile
-        target = instance.resourceinstance
-    elif hasattr(instance, "resourceinstanceid"):  # ResourceModel
-        target = instance
-
-    action.send(user, verb='delete', action_object=instance, 
-                description=instance._meta.object_name, target = target)
-
-
-for modelClass in [GraphModel, ResourceInstance, Concept, File, Node, TileModel, Value]:
-    post_save.connect(AS_cu_handler, sender=modelClass)
-    post_delete.connect(AS_delete_handler, sender=modelClass)
+try:
+    if settings.USE_ACTIVITY_STREAM == True:
+        from arches.activitystream.signal_handlers import AS_hook_model
+        for model_object in [Graph, Concept, File, Node, Value]:
+            AS_hook_model(model_object)
+            logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
+except AttributeError as e:
+    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating {0} model hooks".format(model_object.__name__))

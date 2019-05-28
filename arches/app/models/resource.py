@@ -458,10 +458,11 @@ def is_uuid(value_to_test):
         return False
 
 
-from actstream import action, registry
-from arches.app.models.models import AS_cu_handler, AS_delete_handler
-from django.db.models.signals import post_delete, post_save
-
-registry.register(Resource)
-post_save.connect(AS_cu_handler, sender=Resource)
-post_delete.connect(AS_delete_handler, sender=Resource)
+try:
+    if settings.USE_ACTIVITY_STREAM == True:
+        from arches.activitystream.signal_handlers import AS_hook_model
+        for model_object in [Resource]:
+            AS_hook_model(model_object)
+            logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
+except AttributeError as e:
+    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating model hooks")
