@@ -1060,7 +1060,7 @@ class Plugin(models.Model):
 
 try:
     from arches.activitystream.signal_handlers import AS_hook_model
-    for model_object in [Graph, Concept, File, Node, Value]:
+    for model_object in [GraphModel, Concept, File, Node, Value]:
         AS_hook_model(model_object)
         logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
 except ImportError as e:
