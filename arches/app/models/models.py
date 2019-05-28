@@ -1065,4 +1065,4 @@ try:
             AS_hook_model(model_object)
             logger.info("Activity Stream: watching {0} model activity".format(model_object.__name__))
 except AttributeError as e:
-    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating {0} model hooks".format(model_object.__name__))
+    logger.info("'USE_ACTIVITY_STREAM' is not present in settings.py - not activating model hooks")
