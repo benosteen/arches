@@ -32,6 +32,10 @@ from django.core.validators import validate_slug
 # can't use "arches.app.models.system_settings.SystemSettings" because of circular refernce issue
 # so make sure the only settings we use in this file are ones that are static (fixed at run time)
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def get_ontology_storage_system():
     return FileSystemStorage(location=os.path.join(settings.ROOT_DIR, 'db', 'ontologies'))

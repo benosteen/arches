@@ -33,6 +33,9 @@ from arches.app.search.elasticsearch_dsl_builder import Query, Bool, Terms
 from arches.app.utils.betterJSONSerializer import JSONSerializer, JSONDeserializer
 from arches.app.utils.exceptions import InvalidNodeNameException, MultipleNodesFoundException
 from arches.app.datatypes.datatypes import DataTypeFactory
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Resource(models.ResourceInstance):
