@@ -45,7 +45,8 @@ def AS_delete_handler(sender, instance, **kwargs):
                 description=instance._meta.object_name, target = target)
 
 
-def AS_hook_model(modelObject):
+def AS_hook_model(modelObject, register=True):
+    if register is True:
         registry.register(modelObject)
-        post_save.connect(AS_cu_handler, sender=modelObject)
-        post_delete.connect(AS_delete_handler, sender=modelObject)
+    post_save.connect(AS_cu_handler, sender=modelObject)
+    post_delete.connect(AS_delete_handler, sender=modelObject)
