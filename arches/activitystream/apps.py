@@ -13,3 +13,4 @@ class Config(AppConfig):
         registry.register(apps.get_model('models.Value'))
         registry.register(apps.get_model('models.Node'))
         registry.register(apps.get_model('models.File'))
+        registry.register(apps.get_model('models.ResourceInstance'))
